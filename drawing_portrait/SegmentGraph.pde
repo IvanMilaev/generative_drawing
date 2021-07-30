@@ -1,4 +1,4 @@
-import java.util.Collections;
+
 
 float thr(float size, float c){
     return c/size;
@@ -19,10 +19,12 @@ class Edge implements Comparable<Edge> {
   }
 }
 
-
 DisjointSet segment_graph(int num_vertices, int num_edges, ArrayList<Edge> edges, float c) {
   
   Collections.sort(edges);
+  //for (int i= 0; i < num_edges; i++) {
+  //  print(edges.get(i).w, " | ");
+  //}
   
   
   DisjointSet ds = new DisjointSet(num_vertices);
@@ -40,12 +42,13 @@ DisjointSet segment_graph(int num_vertices, int num_edges, ArrayList<Edge> edges
     int a = ds.find(pedge.a);
     int b = ds.find(pedge.b);
     if( a != b) {
-      if((pedge.w <= threshold[a]) && (pedge.w <= threshold[a])) {
+      if((pedge.w <= threshold[a]) && (pedge.w <= threshold[b])) {
         ds.join(a,b);
         a = ds.find(a);
         threshold[a] = pedge.w + thr(ds.size(a), c);
       }
     }
+    
   }
   
   

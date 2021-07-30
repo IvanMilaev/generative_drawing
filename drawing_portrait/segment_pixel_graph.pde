@@ -1,15 +1,6 @@
-float diff(PImage img, int x1, int y1, int x2, int y2) {
-  int width = img.width;
-   return sqrt(
-    pow(red(img.pixels[y1*width + x1]) - red(img.pixels[y2*width + x2]), 2.0) +
-    pow(green(img.pixels[y1*width + x1]) - green(img.pixels[y2*width + x2]), 2.0) +
-    pow(blue(img.pixels[y1*width + x1]) - blue(img.pixels[y2*width + x2]), 2.0)
-  );
+DisjointSet segment_pixel_graph(PImage img, float sigma, float c, int min_size) {
   
-}
-
-PImage segment_image(PImage img, float sigma, float c, int min_size) {
-  int width = img.width;
+   int width = img.width;
   int height = img.height;
   
   PImage blurred = img.copy();
@@ -85,23 +76,5 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
   int num_ccs = ds.num_sets();
   print("got  components: ", num_ccs);
   
-  color colors[] = new color[width*height];
-  for (int i = 0; i < width*height; i++) {
-    float rand = random(255);
-    colors[i] = color(rand,rand, rand);
-  }
-    
-  
-  PImage output = createImage(width, height, RGB);
-  
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
-      int comp = ds.find(y * width + x);
-      output.pixels[y * width + x] = colors[comp];
-    }
-  }  
-
-  
-  
-  return output;
+  return ds;
 }
