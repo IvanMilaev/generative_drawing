@@ -13,52 +13,53 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
   int height = img.height;
   
   PImage blurred = img.copy();
-  
   blurred.filter(BLUR, sigma);
-  
-  
   
   ArrayList<Edge> edges = new ArrayList<Edge>(); 
   int num = 0;
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
       if( x < width-1 ) {
-        Edge edge = new Edge(
+        edges.add(
+        new Edge(
           y * width + x,
           y * width + (x +1),
           diff(blurred,x,y,x+1,y)
-         );
-        edges.add(edge);
+         )
+        );
         num++;
       }
       
       if(y < height - 1) {
-        Edge edge = new Edge(
+        edges.add(
+        new Edge(
           y * width + x,
           (y+1) * width + x,
           diff(blurred,x,y,x,y+1)
+         )
         );
-        edges.add(edge);
         num++;
       }
       
       if ((x < width-1) && (y < height-1)) {
-        Edge edge = new Edge(
+        edges.add(
+         new Edge(
           y * width + x,
           (y+1) * width + (x+1),
           diff(blurred, x, y, x+1, y+1)
+         )
         );
-        edges.add(edge);
         num++;
       }
       
       if ((x < width-1) && (y > 0)) {
-        Edge edge = new Edge(
+        edges.add(
+        new Edge(
           y * width + x,
           (y-1) * width + (x+1),
            diff(blurred, x, y, x+1, y-1)
+         )
         );
-        edges.add(edge);
         num++;
       }
       
