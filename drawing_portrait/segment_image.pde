@@ -1,9 +1,9 @@
-float diff(PImage r, PImage g, PImage b, int x1, int y1, int x2, int y2) {
+float diff(PImage img, int x1, int y1, int x2, int y2) {
   int width = r.width;
    return sqrt(
-    pow(r.pixels[y1*width + x1] - r.pixels[y2*width + x2], 2.0) +
-    pow(g.pixels[y1*width + x1] - g.pixels[y2*width + x2], 2.0) +
-    pow(b.pixels[y1*width + x1] - b.pixels[y2*width + x2], 2.0)
+    pow(red(img.pixels[y1*width + x1]) - red(img.pixels[y2*width + x2]), 2.0) +
+    pow(green(img.pixels[y1*width + x1]) - green(img.pixels[y2*width + x2]), 2.0) +
+    pow(blue(img.pixels[y1*width + x1]) - blue(img.pixels[y2*width + x2]), 2.0)
   );
   
 }
@@ -12,20 +12,10 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
   int width = img.width;
   int height = img.height;
   
-  PImage sr = createImage(width,height,ALPHA);
-  PImage sg = createImage(width,height,ALPHA);
-  PImage sb = createImage(width,height,ALPHA);
- 
+  PImage blurred = img.copy();
   
-  for(int i = 0; i < img.pixels.length; i++) {
-    sr.pixels[i] = color(red(img.pixels[i]),0,0);
-    sg.pixels[i] = color(0,green(img.pixels[i]),0);
-    sb.pixels[i] = color(0,0,blue(img.pixels[i]));
-  }
+  blurred.filter(BLUR, sigma);
   
-  sr.filter(BLUR, sigma);
-  sg.filter(BLUR, sigma);
-  sb.filter(BLUR, sigma);
   
   
   ArrayList<Edge> edges = new ArrayList<Edge>(); 
@@ -36,7 +26,7 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
         Edge edge = new Edge();
         edge.a = y * width + x;
         edge.b = y * width + (x +1);
-        edge.w = diff(sr,sg,sb,x,y,x+1,y);
+        edge.w = diff(blurred,x,y,x+1,y);
         edges.add(edge);
         num++;
       }
@@ -45,7 +35,7 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
         Edge edge = new Edge();
         edge.a = y * width + x;
         edge.b = (y+1) * width + x;
-        edge.w = diff(sr,sg,sb,x,y,x,y+1);
+        edge.w = diff(blurred,x,y,x,y+1);
         edges.add(edge);
         num++;
       }
@@ -54,7 +44,7 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
         Edge edge = new Edge();
         edge.a = y * width + x;
         edge.b = (y+1) * width + (x+1);
-        edge.w = diff(sr, sg, sb, x, y, x+1, y+1);
+        edge.w = diff(blurred, x, y, x+1, y+1);
         edges.add(edge);
         num++;
       }
@@ -63,7 +53,7 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
         Edge edge = new Edge();
         edge.a = y * width + x;
         edge.b = (y-1) * width + (x+1);
-        edge.w = diff(sr, sg, sb, x, y, x+1, y-1);
+        edge.w = diff(blurred, x, y, x+1, y-1);
         edges.add(edge);
         num++;
       }
@@ -71,10 +61,10 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
     }
   }
   
-  print("we here 1");
+  
   
   DisjointSet ds = segment_graph(width*height, num, edges, c);
-  print(width*height, num);
+  
   
   for (int i = 0; i< num; i++) {
     int a = ds.find(edges.get(i).a);

@@ -17,12 +17,11 @@ class Edge implements Comparable<Edge> {
 DisjointSet segment_graph(int num_vertices, int num_edges, ArrayList<Edge> edges, float c) {
   
   Collections.sort(edges);
-  println(num_vertices,num_edges );
-  println("we here 2");
+  
   
   DisjointSet ds = new DisjointSet(num_vertices);
-  println(ds);
-  println(ds.find(edges.get(100).a));
+  
+  
   float threshold[] = new float[num_vertices];
   
   for (int i = 0; i < num_vertices; i++) {
@@ -43,7 +42,7 @@ DisjointSet segment_graph(int num_vertices, int num_edges, ArrayList<Edge> edges
     }
   }
   
-  println("Ds create done");
+  
   
   return ds;
   
