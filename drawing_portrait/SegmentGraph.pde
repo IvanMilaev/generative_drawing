@@ -8,6 +8,12 @@ class Edge implements Comparable<Edge> {
   Float w;
   int a, b;
   
+  Edge(int a_, int b_, Float w_){
+    a = a_;
+    b=b_;
+    w=w_;
+  }
+  
   int compareTo(Edge edge) {
     return this.w.compareTo(edge.w);
   }

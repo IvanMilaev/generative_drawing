@@ -18,7 +18,7 @@ void setup() {
   image(img, 0, 0, width, height);
   
  
-  seg = segment_image(img, 3, 1.8, 50);
+  seg = segment_image(img, 0.4, 1.8, 50);
   
 }
 

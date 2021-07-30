@@ -1,5 +1,5 @@
 float diff(PImage img, int x1, int y1, int x2, int y2) {
-  int width = r.width;
+  int width = img.width;
    return sqrt(
     pow(red(img.pixels[y1*width + x1]) - red(img.pixels[y2*width + x2]), 2.0) +
     pow(green(img.pixels[y1*width + x1]) - green(img.pixels[y2*width + x2]), 2.0) +
@@ -23,37 +23,41 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
       if( x < width-1 ) {
-        Edge edge = new Edge();
-        edge.a = y * width + x;
-        edge.b = y * width + (x +1);
-        edge.w = diff(blurred,x,y,x+1,y);
+        Edge edge = new Edge(
+          y * width + x,
+          y * width + (x +1),
+          diff(blurred,x,y,x+1,y)
+         );
         edges.add(edge);
         num++;
       }
       
       if(y < height - 1) {
-        Edge edge = new Edge();
-        edge.a = y * width + x;
-        edge.b = (y+1) * width + x;
-        edge.w = diff(blurred,x,y,x,y+1);
+        Edge edge = new Edge(
+          y * width + x,
+          (y+1) * width + x,
+          diff(blurred,x,y,x,y+1)
+        );
         edges.add(edge);
         num++;
       }
       
       if ((x < width-1) && (y < height-1)) {
-        Edge edge = new Edge();
-        edge.a = y * width + x;
-        edge.b = (y+1) * width + (x+1);
-        edge.w = diff(blurred, x, y, x+1, y+1);
+        Edge edge = new Edge(
+          y * width + x,
+          (y+1) * width + (x+1),
+          diff(blurred, x, y, x+1, y+1)
+        );
         edges.add(edge);
         num++;
       }
       
       if ((x < width-1) && (y > 0)) {
-        Edge edge = new Edge();
-        edge.a = y * width + x;
-        edge.b = (y-1) * width + (x+1);
-        edge.w = diff(blurred, x, y, x+1, y-1);
+        Edge edge = new Edge(
+          y * width + x,
+          (y-1) * width + (x+1),
+           diff(blurred, x, y, x+1, y-1)
+        );
         edges.add(edge);
         num++;
       }
@@ -76,7 +80,7 @@ PImage segment_image(PImage img, float sigma, float c, int min_size) {
   }
   
   int num_ccs = ds.num_sets();
-  print("got %d components\n", num_ccs);
+  print("got  components: ", num_ccs);
   
   color colors[] = new color[width*height];
   for (int i = 0; i < width*height; i++) {
